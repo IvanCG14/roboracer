@@ -375,7 +375,7 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="${car_name}/laser_model">
+  <!--gazebo reference="${car_name}/laser_model">
     <material>Gazebo/Black</material>
     <sensor type="ray" name="hokuyo">
       <pose>0 0 0 0 0 0</pose>
@@ -410,6 +410,6 @@
         <frame_name>ego_racecar/laser_model</frame_name>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo>-->
 
 </robot>

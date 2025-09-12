@@ -16,7 +16,15 @@ import yaml
 
 def generate_launch_description():
     ld = LaunchDescription()
+
+    world_arg = DeclareLaunchArgument(
+        'world',
+        default_value='',
+        description='Path to world file'
+    )
     
+    ld.add_action(world_arg)
+
     # Cargar configuración original de F1Tenth
     config = os.path.join(
         get_package_share_directory('f1tenth_gym_ros'),
@@ -40,12 +48,6 @@ def generate_launch_description():
             'world': LaunchConfiguration('world'),  # ESTA LÍNEA FALTA
             'extra_gazebo_args': '--ros-args --params-file ' + gazebo_params_file
         }.items()
-    )
-
-    world_arg = DeclareLaunchArgument(
-        'world',
-        default_value='',
-        description='Path to world file'
     )
     
     # === ROBOT STATE PUBLISHERS MODIFICADOS PARA GAZEBO ===
@@ -144,6 +146,21 @@ def generate_launch_description():
         ]
     )
 
+    # Después de nav_lifecycle_node, añadir:
+    static_tf_map_odom = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'],
+        parameters=[{'use_sim_time': True}]
+    )
+
+    static_tf_odom_base = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher', 
+        arguments=['0', '0', '0', '0', '0', '0', 'odom', 'ego_racecar/base_link'],
+        parameters=[{'use_sim_time': True}]
+    )
+
     # Spawners de controladores ros2_control
     ackermann_controller_spawner = TimerAction(
         period=5.0,  # Esperar 5 segundos
@@ -158,13 +175,14 @@ def generate_launch_description():
         ]
     )
 
+    # En los spawners, añadir más información:
     joint_broadcaster_spawner = TimerAction(
-        period=3.0,  # Esperar 3 segundos
+        period=8.0,  # Aumentar tiempo
         actions=[
             Node(
                 package="controller_manager", 
                 executable="spawner",
-                arguments=["joint_state_broadcaster"],
+                arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
                 parameters=[{'use_sim_time': True}],
                 output='screen'
             )
@@ -189,9 +207,11 @@ def generate_launch_description():
     ld.add_action(rviz_node)
     ld.add_action(nav_lifecycle_node)
     ld.add_action(map_server_node)
-    ld.add_action(world_arg)
+    ld.add_action(static_tf_map_odom)
+    ld.add_action(static_tf_odom_base)
+    
     # ros2_control spawners
-    ld.add_action(ackermann_controller_spawner)
+    #ld.add_action(ackermann_controller_spawner)
     ld.add_action(joint_broadcaster_spawner)
     
     return ld
