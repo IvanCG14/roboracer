@@ -1,4 +1,4 @@
-# Proyecto Roboracer con Librerìa F1Tenth
+# Proyecto Roboracer con Librería F1Tenth
 
 ## Recorrido de circuito con Algoritmo de F1Tenth
 El coche puede ser visualizado en rviz y al ejecutar el archivo obstaculosFTG, iniciarà el recorrido del circuito segùn el mapa designado en el archivo sim.yaml.
@@ -23,3 +23,5 @@ ros2 launch f1tenth_gym_ros gazebo_test.launch.py world:=./src/f1tenth_gym_ros/w
 Para instalar dependencias necesarias, seguir los primeros pasos de este repositorio de git:
 
 https://github.com/widegonz/F1Tenth-Repository
+
+Video de simulaciones: https://1drv.ms/p/c/66c04837d2873fa4/EasMwtYeDP9IgrUZ__TMdwQByxXqX63KZstSONm42tjisA?e=9ngfS5
